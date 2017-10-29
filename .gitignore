@@ -1,1 +1,4 @@
-*.psd
+.DS_Store
+.htmlhintrc
+.stylelintrc
+.eslintrc.json
