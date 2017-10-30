@@ -25,9 +25,12 @@
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
 
- /* engine */
+ /* engine--------------------------- */
  var deck = document.getElementsByClassName('deck')[0],
      opened = new Array(),
+ 	 moves = document.querySelector('.score-panel span.moves'),
+ 	 resBtn = document.querySelector('.score-panel .restart .fa-repeat'),
+ 	 openCounter = 0,
      toMatch,
      currentGame;
  var cards = deck.getElementsByTagName('li');
@@ -36,7 +39,10 @@
           });
 
  function judgeVictory(){
-
+ 	if(openCounter >= 16){
+ 		alert('You Win with' + moves.textContent + ' steps.' )
+ 		restart();
+ 	}
  }
 
  function matchTwoCards(card1, card2){
@@ -49,6 +55,8 @@
 	 		// match success, open both two cards
 	 		card1.setAttribute('class','card open show');
 	 		card2.setAttribute('class','card open show');
+	 		openCounter += 2;
+	 		console.log(openCounter);
 	 		toMatch = null;
 	 	}else{
 	 		// match fail, shut both two cards
@@ -56,6 +64,8 @@
 	 		card2.setAttribute('class', 'card');
 	 		toMatch = null;
 	 	}
+	 	moves.textContent++;
+	 	judgeVictory();
  	}
  }
 
@@ -65,7 +75,6 @@
  }
 
  function liHandler(event){
- 	judgeVictory();
  	var target = event.target;
  	if(target.nodeName == 'LI'){
  		// test if target is open show
@@ -78,6 +87,7 @@
 		 		var className = target.getAttribute('class') + ' match';
 		 		target.setAttribute('class',className);
 		 		toMatch = target;
+		 		moves.textContent++;
  			}
  		}
  		
@@ -89,7 +99,8 @@
 // Game constructor
 function Game(){
 	this.icons = arguments.callee.prototype.shuffle(arguments.callee.prototype.icons);
-	this.moves = 0;
+	moves.textContent = 0;
+	toMatch = null;
 	for(let i = 0, len = this.icons.length; i < len; i ++){
 		cards[i].setAttribute('class', 'card');
 		iGroup[i].setAttribute('class', 'fa ' + this.icons[i]);
@@ -118,9 +129,11 @@ Game.prototype.shuffle = function(array) {
 
 
 function restart(){
-
+	currentGame = new Game();
 }
 
 /* init */ 
  deck.addEventListener('click',liHandler);
- currentGame = new Game();
+ resBtn.addEventListener('click', restart);
+
+ restart();
