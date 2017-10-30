@@ -11,21 +11,7 @@
  */
 
 // Shuffle function from http://stackoverflow.com/a/2450976
-function shuffle(array) {
-    var currentIndex = array.length,
-        temporaryValue, 
-        randomIndex;
 
-    while (currentIndex !== 0) {
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex -= 1;
-        temporaryValue = array[currentIndex];
-        array[currentIndex] = array[randomIndex];
-        array[randomIndex] = temporaryValue;
-    }
-
-    return array;
-}
 
 
 /*
@@ -39,9 +25,15 @@ function shuffle(array) {
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
 
+ /* engine */
  var deck = document.getElementsByClassName('deck')[0],
      opened = new Array(),
-     toMatch;
+     toMatch,
+     currentGame;
+ var cards = deck.getElementsByTagName('li');
+ var iGroup = Array.prototype.map.call(cards, (card) => {
+          	return card.querySelector('i');
+          });
 
  function judgeVictory(){
 
@@ -92,4 +84,43 @@ function shuffle(array) {
  	}
  }
 
+/* restart shuffle ----------------------------------------*/ 
+
+// Game constructor
+function Game(){
+	this.icons = arguments.callee.prototype.shuffle(arguments.callee.prototype.icons);
+	this.moves = 0;
+	for(let i = 0, len = this.icons.length; i < len; i ++){
+		cards[i].setAttribute('class', 'card');
+		iGroup[i].setAttribute('class', 'fa ' + this.icons[i]);
+	}
+}
+
+Game.prototype.icons = ['fa-diamond', 'fa-diamond','fa-paper-plane-o', 'fa-paper-plane-o',
+'fa-bolt', 'fa-bolt', 'fa-cube', 'fa-cube', 'fa-anchor', 'fa-anchor', 'fa-leaf', 'fa-leaf',
+'fa-bicycle', 'fa-bicycle', 'fa-bomb', 'fa-bomb'];
+
+Game.prototype.shuffle = function(array) {
+    var currentIndex = array.length,
+        temporaryValue, 
+        randomIndex;
+
+    while (currentIndex !== 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+    }
+    console.log(array);
+    return array;
+}
+
+
+function restart(){
+
+}
+
+/* init */ 
  deck.addEventListener('click',liHandler);
+ currentGame = new Game();
