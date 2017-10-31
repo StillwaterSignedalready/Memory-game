@@ -32,6 +32,7 @@
  	 resBtn = document.querySelector('.score-panel .restart .fa-repeat'),
      cover = document.querySelector('div.cover'),
      stars =  document.querySelector('ul.stars'),
+     starsAmount = 5,
  	 openCounter = 0,
      toMatch,
      currentGame,
@@ -67,7 +68,6 @@
  function judgeVictory(){
  	if(openCounter >= 16){
  		// alert('You Win with ' + moves.textContent + ' steps.' )
- 		var starsAmount = stars.getElementsByTagName('li').length;
  		cover.style.display = 'block';
  		winMsg.textContent = 'With ' + moves.textContent + ' steps, your level is '+ starsAmount + ' stars, maybe you can do better last time.' ;
  		restart();
@@ -102,7 +102,8 @@
 	 		toMatch = null;
 	 		// reduce stars
 	 		if(wrongTimes >= 17){
-	 			stars.getElementsByTagName('li')[0].style.display= 'none' ;
+	 			stars.getElementsByTagName('li')[0].style.display= 'none';
+	 			starsAmount --;
 	 			wrongTimes = 0;
 	 		}
 	 	}
