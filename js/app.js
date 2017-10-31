@@ -40,9 +40,26 @@
 
  function judgeVictory(){
  	if(openCounter >= 16){
- 		alert('You Win with' + moves.textContent + ' steps.' )
+ 		alert('You Win with ' + moves.textContent + ' steps.' )
  		restart();
  	}
+ }
+
+ function toMatchAnima(card){
+ 	// console.log(card);
+ 	var className = card.getAttribute('class');
+ 	card.setAttribute('class', className + ' animated flipInY');
+ }
+
+ function matchAnima(card){
+ 	// console.log(card);
+ 	var className = card.getAttribute('class');
+ 	card.setAttribute('class', className + ' animated rubberBand');
+ }
+
+ function disMatchAnima(card){
+ 	// console.log(card);
+ 	card.setAttribute('class','card dismatch animated wobble');
  }
 
  function matchTwoCards(card1, card2){
@@ -55,17 +72,23 @@
 	 		// match success, open both two cards
 	 		card1.setAttribute('class','card open show');
 	 		card2.setAttribute('class','card open show');
+	 		matchAnima(card1);
+	 		matchAnima(card2);
 	 		openCounter += 2;
 	 		console.log(openCounter);
 	 		toMatch = null;
+	 		judgeVictory();
 	 	}else{
 	 		// match fail, shut both two cards
-	 		card1.setAttribute('class', 'card');
-	 		card2.setAttribute('class', 'card');
+	 		disMatchAnima(card1);
+	 		disMatchAnima(card2);
+	 		setTimeout(function(){
+		 		card1.setAttribute('class', 'card');
+		 		card2.setAttribute('class', 'card');
+	 		}, 700);
 	 		toMatch = null;
 	 	}
 	 	moves.textContent++;
-	 	judgeVictory();
  	}
  }
 
@@ -87,6 +110,7 @@
 		 		var className = target.getAttribute('class') + ' match';
 		 		target.setAttribute('class',className);
 		 		toMatch = target;
+		 		toMatchAnima(target);
 		 		moves.textContent++;
  			}
  		}
@@ -100,6 +124,7 @@
 function Game(){
 	this.icons = arguments.callee.prototype.shuffle(arguments.callee.prototype.icons);
 	moves.textContent = 0;
+	openCounter = 0;
 	toMatch = null;
 	for(let i = 0, len = this.icons.length; i < len; i ++){
 		cards[i].setAttribute('class', 'card');
