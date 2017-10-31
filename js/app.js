@@ -36,7 +36,8 @@
  	 openCounter = 0,
      toMatch,
      currentGame,
-     wrongTimes = 0;
+     wrongTimes = 0,
+     starCounter = 0;
  var cards = deck.getElementsByTagName('li'),
      playAgain = cover.getElementsByTagName('button')[0],
      winMsg = cover.getElementsByTagName('p')[0];
@@ -102,9 +103,10 @@
 	 		toMatch = null;
 	 		// reduce stars
 	 		if(wrongTimes >= 17){
-	 			stars.getElementsByTagName('li')[0].style.display= 'none';
+	 			stars.getElementsByTagName('li')[starCounter].style.display= 'none';
 	 			starsAmount --;
 	 			wrongTimes = 0;
+	 			starCounter ++;
 	 		}
 	 	}
 	 	moves.textContent++;
