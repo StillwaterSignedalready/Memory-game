@@ -102,7 +102,7 @@
 	 		toMatch = null;
 	 		// reduce stars
 	 		if(wrongTimes >= 17){
-	 			stars.removeChild(stars.getElementsByTagName('li')[0]);
+	 			stars.getElementsByTagName('li')[0].style.display= 'none' ;
 	 			wrongTimes = 0;
 	 		}
 	 	}
@@ -144,6 +144,9 @@ function Game(){
 	moves.textContent = 0;
 	openCounter = 0;
 	toMatch = null;
+	Array.prototype.forEach.call(stars.getElementsByTagName('li'), (li) => {
+		li.style.display = 'inline-block';
+	});
 	for(let i = 0, len = this.icons.length; i < len; i ++){
 		cards[i].setAttribute('class', 'card');
 		iGroup[i].setAttribute('class', 'fa ' + this.icons[i]);
