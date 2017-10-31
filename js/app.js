@@ -25,30 +25,30 @@
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
 
- /* engine--------------------------- */
+ /* control data--------------------------- */
  var deck = document.getElementsByClassName('deck')[0],
      opened = new Array(),
  	 moves = document.querySelector('.score-panel span.moves'),
  	 resBtn = document.querySelector('.score-panel .restart .fa-repeat'),
+     cover = document.querySelector('div.cover'),
+     stars =  document.querySelector('ul.stars'),
  	 openCounter = 0,
      toMatch,
-     currentGame;
- var cards = deck.getElementsByTagName('li');
+     currentGame,
+     wrongTimes = 0;
+ var cards = deck.getElementsByTagName('li'),
+     playAgain = cover.getElementsByTagName('button')[0],
+     winMsg = cover.getElementsByTagName('p')[0];
  var iGroup = Array.prototype.map.call(cards, (card) => {
           	return card.querySelector('i');
           });
+ /* --------------------------- control data*/
 
- function judgeVictory(){
- 	if(openCounter >= 16){
- 		alert('You Win with ' + moves.textContent + ' steps.' )
- 		restart();
- 	}
- }
-
+ /* animation---------------------------  */
  function toMatchAnima(card){
  	// console.log(card);
  	var className = card.getAttribute('class');
- 	card.setAttribute('class', className + ' animated flipInY');
+ 	card.setAttribute('class', className + ' animated flip');
  }
 
  function matchAnima(card){
@@ -60,6 +60,18 @@
  function disMatchAnima(card){
  	// console.log(card);
  	card.setAttribute('class','card dismatch animated wobble');
+ }
+ /* ---------------------------  animation*/ 
+
+/* core management of game---------------------------   */
+ function judgeVictory(){
+ 	if(openCounter >= 16){
+ 		// alert('You Win with ' + moves.textContent + ' steps.' )
+ 		var starsAmount = stars.getElementsByTagName('li').length;
+ 		cover.style.display = 'block';
+ 		winMsg.textContent = 'With ' + moves.textContent + ' steps, your level is '+ starsAmount + ' stars, maybe you can do better last time.' ;
+ 		restart();
+ 	}
  }
 
  function matchTwoCards(card1, card2){
@@ -74,19 +86,25 @@
 	 		card2.setAttribute('class','card open show');
 	 		matchAnima(card1);
 	 		matchAnima(card2);
+	 		// match complete, do calculation
 	 		openCounter += 2;
-	 		console.log(openCounter);
 	 		toMatch = null;
 	 		judgeVictory();
 	 	}else{
 	 		// match fail, shut both two cards
 	 		disMatchAnima(card1);
 	 		disMatchAnima(card2);
+	 		// wait animation complete, then shut down cards
 	 		setTimeout(function(){
 		 		card1.setAttribute('class', 'card');
 		 		card2.setAttribute('class', 'card');
 	 		}, 700);
 	 		toMatch = null;
+	 		// reduce stars
+	 		if(wrongTimes >= 17){
+	 			stars.removeChild(stars.getElementsByTagName('li')[0]);
+	 			wrongTimes = 0;
+	 		}
 	 	}
 	 	moves.textContent++;
  	}
@@ -100,6 +118,7 @@
  function liHandler(event){
  	var target = event.target;
  	if(target.nodeName == 'LI'){
+		wrongTimes ++;
  		// test if target is open show
  		if(toMatch){
  			// match toMatch & target
@@ -117,10 +136,9 @@
  		
  	}
  }
+/* ---------------------------core method of game */
 
-/* restart shuffle ----------------------------------------*/ 
-
-// Game constructor
+/* Game constructor--------------------------- */
 function Game(){
 	this.icons = arguments.callee.prototype.shuffle(arguments.callee.prototype.icons);
 	moves.textContent = 0;
@@ -152,13 +170,17 @@ Game.prototype.shuffle = function(array) {
     return array;
 }
 
-
 function restart(){
 	currentGame = new Game();
 }
+/* ---------------------------Game constructor */
 
-/* init */ 
+/* init--------------------------- */ 
  deck.addEventListener('click',liHandler);
  resBtn.addEventListener('click', restart);
+ playAgain.addEventListener('click', function(){
+ 	cover.style.display = 'none';
+ 	restart();
+ })
 
  restart();
