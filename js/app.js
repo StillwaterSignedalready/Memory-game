@@ -1,29 +1,3 @@
-/*
- * Create a list that holds all of your cards
- */
-
-
-/*
- * Display the cards on the page
- *   - shuffle the list of cards using the provided "shuffle" method below
- *   - loop through each card and create its HTML
- *   - add each card's HTML to the page
- */
-
-// Shuffle function from http://stackoverflow.com/a/2450976
-
-
-
-/*
- * set up the event listener for a card. If a card is clicked:
- *  - display the card's symbol (put this functionality in another function that you call from this one)
- *  - add the card to a *list* of "open" cards (put this functionality in another function that you call from this one)
- *  - if the list already has another card, check to see if the two cards match
- *    + if the cards do match, lock the cards in the open position (put this functionality in another function that you call from this one)
- *    + if the cards do not match, remove the cards from the list and hide the card's symbol (put this functionality in another function that you call from this one)
- *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
- *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
- */
 
  /* control data--------------------------- */
  var deck = document.getElementsByClassName('deck')[0],
@@ -32,12 +6,13 @@
  	 resBtn = document.querySelector('.score-panel .restart .fa-repeat'),
      cover = document.querySelector('div.cover'),
      stars =  document.querySelector('ul.stars'),
-     starsAmount = 5,
+     timeCounter = document.querySelector('span.time'),
+     starsAmount = 3,
+     starCounter = 0,
  	 openCounter = 0,
      toMatch,
      currentGame,
-     wrongTimes = 0,
-     starCounter = 0;
+     wrongTimes = 0;
  var cards = deck.getElementsByTagName('li'),
      playAgain = cover.getElementsByTagName('button')[0],
      winMsg = cover.getElementsByTagName('p')[0];
@@ -48,19 +23,16 @@
 
  /* animation---------------------------  */
  function toMatchAnima(card){
- 	// console.log(card);
  	var className = card.getAttribute('class');
  	card.setAttribute('class', className + ' animated flip');
  }
 
  function matchAnima(card){
- 	// console.log(card);
  	var className = card.getAttribute('class');
  	card.setAttribute('class', className + ' animated rubberBand');
  }
 
  function disMatchAnima(card){
- 	// console.log(card);
  	card.setAttribute('class','card dismatch animated wobble');
  }
  /* ---------------------------  animation*/ 
@@ -68,9 +40,20 @@
 /* core management of game---------------------------   */
  function judgeVictory(){
  	if(openCounter >= 16){
- 		// alert('You Win with ' + moves.textContent + ' steps.' )
+ 		var sentence = '';
+ 		switch(starsAmount){
+ 			case 1:
+ 				sentence = 'well, that\'s kinda awkward.';
+ 				break;
+ 			case 2:
+ 				sentence = 'maybe you can do better last time.';
+ 				break;
+ 			case 3:
+ 				sentence = 'you are immortal!';
+ 				break;
+ 		}
  		cover.style.display = 'block';
- 		winMsg.textContent = 'With ' + moves.textContent + ' steps, your level is '+ starsAmount + ' stars, maybe you can do better last time.' ;
+ 		winMsg.textContent = 'With ' + moves.textContent + ' steps in ' + timeCounter.textContent +' seconds, your level is '+ starsAmount + ' stars, ' + sentence ;
  		restart();
  	}
  }
@@ -102,8 +85,9 @@
 	 		}, 700);
 	 		toMatch = null;
 	 		// reduce stars
-	 		if(wrongTimes >= 17){
-	 			stars.getElementsByTagName('li')[starCounter].style.display= 'none';
+	 		if(wrongTimes >= 28 && starsAmount > 1){
+	 			var faStar = stars.querySelectorAll('.fa-star');
+	 			faStar[faStar.length - 1].setAttribute('class', 'fa fa-star-o');
 	 			starsAmount --;
 	 			wrongTimes = 0;
 	 			starCounter ++;
@@ -143,13 +127,9 @@
 
 /* Game constructor--------------------------- */
 function Game(){
+	// shuffle icons
 	this.icons = arguments.callee.prototype.shuffle(arguments.callee.prototype.icons);
-	moves.textContent = 0;
-	openCounter = 0;
-	toMatch = null;
-	Array.prototype.forEach.call(stars.getElementsByTagName('li'), (li) => {
-		li.style.display = 'inline-block';
-	});
+	// write shuffled messages into cards
 	for(let i = 0, len = this.icons.length; i < len; i ++){
 		cards[i].setAttribute('class', 'card');
 		iGroup[i].setAttribute('class', 'fa ' + this.icons[i]);
@@ -177,6 +157,14 @@ Game.prototype.shuffle = function(array) {
 }
 
 function restart(){
+	moves.textContent = 0;
+	openCounter = 0;
+	toMatch = null;
+	starsAmount = 3;
+	starCounter = 0;
+	timeCounter.textContent = 0;
+	stars.getElementsByTagName('i')[2].setAttribute('class', 'fa fa-star');
+	stars.getElementsByTagName('i')[1].setAttribute('class', 'fa fa-star');
 	currentGame = new Game();
 }
 /* ---------------------------Game constructor */
@@ -187,6 +175,9 @@ function restart(){
  playAgain.addEventListener('click', function(){
  	cover.style.display = 'none';
  	restart();
- })
+ });
+ setInterval(function(){
+ 	timeCounter.textContent++;
+ }, 1000);
 
  restart();
