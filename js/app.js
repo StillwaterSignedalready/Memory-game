@@ -126,6 +126,7 @@
 /* ---------------------------core method of game */
 
 /* Game constructor--------------------------- */
+ 
 function Game(){
 	// shuffle icons
 	this.icons = arguments.callee.prototype.shuffle(arguments.callee.prototype.icons);
